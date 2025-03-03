@@ -36,7 +36,7 @@ function App() {
   const [numberOfChords, setNumberOfChords] = useState<number>(10);
   const [generatedChords, setGeneratedChords] = useState<string[]>([]);
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'list' | 'single'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'single'>('single');
   const [currentChordIndex, setCurrentChordIndex] = useState<number>(0);
 
   // Toggle category selection
@@ -106,7 +106,7 @@ function App() {
 
   // Toggle between list and single view modes
   const toggleViewMode = () => {
-    setViewMode(viewMode === 'list' ? 'single' : 'single');
+    setViewMode(viewMode === 'list' ? 'single' : 'list');
   };
 
   return (
