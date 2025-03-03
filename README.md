@@ -1,4 +1,6 @@
 # Random Chord Generator
+[Live webapp](www.randomchordpractice.com)
+- uses netlify as deployment platform
 
 ## Todo:
 
