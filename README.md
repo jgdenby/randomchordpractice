@@ -2,6 +2,7 @@
 [Live webapp](www.randomchordpractice.com)
 - uses netlify as deployment platform
 
+hosted on netlify   
 ## Todo:
 
 - [ ] fix webpage title   
