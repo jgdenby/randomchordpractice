@@ -97,9 +97,9 @@ function App() {
         <header className="text-center mb-8">
           <div className="flex items-center justify-center mb-2">
             <Music className="h-8 w-8 text-indigo-600 mr-2" />
-            <h1 className="text-3xl font-bold text-indigo-800">Chord Practice Generator</h1>
+            <h1 className="text-3xl font-bold text-indigo-800">Random Chord Practice</h1>
           </div>
-          <p className="text-gray-600">Generate random chord sequences for your practice sessions</p>
+          <p className="text-gray-600">Generate random chord sequences for your practice sessions!</p>
         </header>
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
