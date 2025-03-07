@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Music, RefreshCw, List, ChevronRight } from 'lucide-react';
+import { Check, Music, RefreshCw } from 'lucide-react';
 
 // Define chord types with their respective variations
 const chordCategories = [
@@ -36,8 +36,6 @@ function App() {
   const [numberOfChords, setNumberOfChords] = useState<number>(10);
   const [generatedChords, setGeneratedChords] = useState<string[]>([]);
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'list' | 'single'>('single');
-  const [currentChordIndex, setCurrentChordIndex] = useState<number>(0);
 
   // Toggle category selection
   const toggleCategory = (categoryId: string) => {
@@ -91,22 +89,6 @@ function App() {
     
     setGeneratedChords(randomChords);
     setIsGenerated(true);
-    setCurrentChordIndex(0); // Reset to first chord when generating new sequence
-  };
-
-  // Move to the next chord in single view mode
-  const nextChord = () => {
-    if (currentChordIndex < generatedChords.length - 1) {
-      setCurrentChordIndex(currentChordIndex + 1);
-    } else {
-      // Loop back to the beginning if we're at the end
-      setCurrentChordIndex(0);
-    }
-  };
-
-  // Toggle between list and single view modes
-  const toggleViewMode = () => {
-    setViewMode(viewMode === 'list' ? 'single' : 'list');
   };
 
   return (
@@ -123,12 +105,28 @@ function App() {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Select Chord Types</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
-            {chordCategories.map(category => (
+          <div className="space-y-4 mb-6">
+            {chordGroups.map(group => (
+              <div key={group.id} className="border rounded-lg overflow-hidden">
+                <button
+                  onClick={() => toggleGroup(group.id)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <span className="font-medium text-gray-800">{group.label}</span>
+                  {expandedGroups.includes(group.id) ? (
+                    <ChevronUp className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-gray-500" />
+                  )}
+                </button>
+                
+                {expandedGroups.includes(group.id) && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3 bg-white">
+                    {group.categories.map(category => (
               <button
                 key={category.id}
                 onClick={() => toggleCategory(category.id)}
-                className={`flex items-center justify-between px-4 py-2 rounded-md transition-colors ${
+                        className={`flex items-center justify-between px-3 py-2 rounded-md transition-colors ${
                   selectedCategories.includes(category.id)
                     ? 'bg-indigo-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -139,6 +137,10 @@ function App() {
                   <Check className="h-4 w-4 ml-2" />
                 )}
               </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
@@ -167,63 +169,63 @@ function App() {
         </div>
 
         {isGenerated && (
-                  <div className="bg-white rounded-lg shadow-lg p-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-semibold text-gray-800">Your Practice Sequence</h2>
-                      
-                      <button
-                        onClick={toggleViewMode}
-                        className="flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 font-medium rounded-md hover:bg-indigo-200 transition-colors"
-                      >
-                        {viewMode === 'list' ? (
-                          <>
-                            <ChevronRight className="h-5 w-5 mr-2" />
-                            <span>Single View</span>
-                          </>
-                        ) : (
-                          <>
-                            <List className="h-5 w-5 mr-2" />
-                            <span>List View</span>
-                          </>
-                        )}
-                      </button>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Your Practice Sequence</h2>
+              
+              <button
+                onClick={toggleViewMode}
+                className="flex items-center px-4 py-2 bg-indigo-100 text-indigo-700 font-medium rounded-md hover:bg-indigo-200 transition-colors"
+              >
+                {viewMode === 'list' ? (
+                  <>
+                    <ChevronRight className="h-5 w-5 mr-2" />
+                    <span>Single View</span>
+                  </>
+                ) : (
+                  <>
+                    <List className="h-5 w-5 mr-2" />
+                    <span>List View</span>
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {generatedChords.length > 0 ? (
+              viewMode === 'list' ? (
+                // List View
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {generatedChords.map((chord, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-center p-4 bg-indigo-50 rounded-md border-2 border-indigo-100"
+                  >
+                    <span className="text-lg font-medium text-indigo-800">{chord}</span>
+                  </div>
+                ))}
+              </div>
+              ) : (
+                // Single Chord View
+                <div className="flex flex-col items-center">
+                  <div className="mb-8 text-center">
+                    <div className="text-sm text-gray-500 mb-2">
+                      Chord {currentChordIndex + 1} of {generatedChords.length}
                     </div>
-                    
-                    {generatedChords.length > 0 ? (
-                      viewMode === 'list' ? (
-                        // List View
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                          {generatedChords.map((chord, index) => (
-                            <div 
-                              key={index} 
-                              className="flex items-center justify-center p-4 bg-indigo-50 rounded-md border-2 border-indigo-100"
-                            >
-                              <span className="text-lg font-medium text-indigo-800">{chord}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        // Single Chord View
-                        <div className="flex flex-col items-center">
-                          <div className="mb-8 text-center">
-                            <div className="text-sm text-gray-500 mb-2">
-                              Chord {currentChordIndex + 1} of {generatedChords.length}
-                            </div>
-                            <div className="flex items-center justify-center p-12 bg-indigo-50 rounded-lg border-2 border-indigo-200 w-48 h-48 mx-auto">
-                              <span className="text-4xl font-bold text-indigo-800">{generatedChords[currentChordIndex]}</span>
-                            </div>
-                          </div>
-                          
-                          <button
-                            onClick={nextChord}
-                            className="flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors"
-                          >
-                            <ChevronRight className="h-5 w-5 mr-2" />
-                            Next Chord
-                          </button>
-                        </div>
-                      )
-                    ) : (
+                    <div className="flex items-center justify-center p-12 bg-indigo-50 rounded-lg border-2 border-indigo-200 w-48 h-48 mx-auto">
+                      <span className="text-4xl font-bold text-indigo-800">{generatedChords[currentChordIndex]}</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={nextChord}
+                    className="flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors"
+                  >
+                    <ChevronRight className="h-5 w-5 mr-2" />
+                    Next Chord
+                  </button>
+                </div>
+              )
+            ) : (
               <p className="text-gray-600">No chords generated. Please select at least one chord type and try again.</p>
             )}
             
@@ -238,7 +240,7 @@ function App() {
           </div>
         )}
 
-<footer className="mt-12 text-center text-gray-500 text-sm">
+        <footer className="mt-12 text-center text-gray-500 text-sm">
           <p>Use this tool to practice your chord transitions and improve your musical skills.</p>
         </footer>
       </div>
